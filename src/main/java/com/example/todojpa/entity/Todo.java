@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
@@ -23,10 +26,19 @@ public class Todo extends BaseEntity {
     @Column(nullable = false)
     private String task;
 
+    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL)
+    List<Comment> comments = new ArrayList<>();
+
     @Builder
     public Todo(User user, String title, String task) {
         this.user = user;
         this.title = title;
         this.task = task;
+    }
+
+    @Override
+    public void softDelete(){
+        super.softDelete();
+        this.comments.forEach(Comment::softDelete);
     }
 }
