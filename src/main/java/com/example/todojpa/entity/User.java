@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity(name = "user")
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class User extends BaseEntity {
@@ -22,8 +25,27 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Todo> todos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
+
     @Builder
     public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    @Override
+    public void softDelete(){
+        super.softDelete();
+        todos.forEach(Todo::softDelete);
+        comments.forEach(Comment::softDelete);
+    }
+
+    public void updateUser(String name, String email, String password){
         this.name = name;
         this.email = email;
         this.password = password;
