@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "user")
+@Entity
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class User extends BaseEntity {
@@ -36,13 +36,6 @@ public class User extends BaseEntity {
         this.name = name;
         this.email = email;
         this.password = password;
-    }
-
-    @Override
-    public void softDelete(){
-        super.softDelete();
-        todos.forEach(Todo::softDelete);
-        comments.forEach(Comment::softDelete);
     }
 
     public void updateUser(String name, String email, String password){

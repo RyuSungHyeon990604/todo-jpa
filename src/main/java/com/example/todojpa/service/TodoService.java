@@ -5,6 +5,7 @@ import com.example.todojpa.dto.TodoResponse;
 import com.example.todojpa.dto.TodoUpdateRequestDto;
 import com.example.todojpa.entity.Todo;
 import com.example.todojpa.entity.User;
+import com.example.todojpa.repository.CommentRepository;
 import com.example.todojpa.repository.TodoRepository;
 import com.example.todojpa.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -20,10 +21,12 @@ import java.util.List;
 public class TodoService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
-    public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
+    public TodoService(TodoRepository todoRepository, UserRepository userRepository, CommentRepository commentRepository) {
         this.todoRepository = todoRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Transactional(readOnly = true)
@@ -75,6 +78,7 @@ public class TodoService {
             throw new RuntimeException("권한 없음");
         }
 
+        commentRepository.softDeleteByTodoId(todo.getId());
         todo.softDelete();
     }
 }

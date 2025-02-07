@@ -36,12 +36,6 @@ public class Todo extends BaseEntity {
         this.task = task;
     }
 
-    @Override
-    public void softDelete(){
-        super.softDelete();
-        this.comments.forEach(Comment::softDelete);
-    }
-
     public void update(String title, String task){
         this.title = title;
         this.task = task;
