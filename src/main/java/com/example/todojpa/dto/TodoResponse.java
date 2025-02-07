@@ -1,19 +1,30 @@
 package com.example.todojpa.dto;
 
 import com.example.todojpa.entity.Todo;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class TodoResponse {
-    private Long id;
-    private String userName;
-    private String title;
-    private String task;
+    private List<TodoDetail> data;
+    private PageInfo pageInfo;
+
+    public static TodoResponse from(Page<Todo> todos) {
+        List<TodoDetail> todoList = todos.getContent().stream().map(TodoDetail::from).toList();
+        return new TodoResponse(todoList, new PageInfo(todos));
+    }
 
     public static TodoResponse from(Todo todo) {
-        return new TodoResponse(todo.getId(),todo.getUser().getName(),todo.getTitle(),todo.getTask());
+        //null넣는거 별로 안좋은듯?
+        return new TodoResponse(List.of(TodoDetail.from(todo)), null);
+    }
+
+    public static TodoResponse from(List<Todo> todos) {
+        List<TodoDetail> todoList = todos.stream().map(TodoDetail::from).toList();
+        return new TodoResponse(todoList, null);
     }
 }

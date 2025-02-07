@@ -1,8 +1,7 @@
 package com.example.todojpa.service;
 
-import com.example.todojpa.dto.TodoCreateRequestDto;
-import com.example.todojpa.dto.TodoResponse;
-import com.example.todojpa.dto.TodoUpdateRequestDto;
+import com.example.todojpa.dto.*;
+import com.example.todojpa.entity.Comment;
 import com.example.todojpa.entity.Todo;
 import com.example.todojpa.entity.User;
 import com.example.todojpa.repository.CommentRepository;
@@ -13,7 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,10 +30,10 @@ public class TodoService {
     }
 
     @Transactional(readOnly = true)
-    public List<TodoResponse> search(String userName, LocalDateTime date, Pageable page) {
-        Page<Todo> todos = todoRepository.findAllByUseYnTrueAndUser_NameAndUpdatedAtOrderByUpdatedAtDesc(userName, date, page);
+    public TodoResponse search(String userName, LocalDate date, Pageable page) {
+        Page<Todo> todos = todoRepository.search(userName, date, page);
 
-        return todos.stream().map(TodoResponse::from).toList();
+        return TodoResponse.from(todos);
     }
 
     @Transactional(readOnly = true)
