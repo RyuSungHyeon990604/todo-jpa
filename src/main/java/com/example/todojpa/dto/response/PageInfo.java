@@ -1,4 +1,4 @@
-package com.example.todojpa.dto;
+package com.example.todojpa.dto.response;
 
 import lombok.Getter;
 import org.springframework.data.domain.Page;

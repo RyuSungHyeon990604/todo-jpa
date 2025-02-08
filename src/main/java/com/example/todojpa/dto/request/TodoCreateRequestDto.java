@@ -1,11 +1,11 @@
-package com.example.todojpa.dto;
+package com.example.todojpa.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class TodoUpdateRequestDto {
+public class TodoCreateRequestDto {
     private String title;
     private String task;
 }

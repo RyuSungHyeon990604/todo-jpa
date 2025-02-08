@@ -1,8 +1,8 @@
 package com.example.todojpa.service;
 
-import com.example.todojpa.dto.UserCreateRequestDto;
-import com.example.todojpa.dto.UserResponse;
-import com.example.todojpa.dto.UserUpdateRequestDto;
+import com.example.todojpa.dto.request.UserCreateRequestDto;
+import com.example.todojpa.dto.response.UserResponse;
+import com.example.todojpa.dto.request.UserUpdateRequestDto;
 import com.example.todojpa.entity.User;
 import com.example.todojpa.repository.CommentRepository;
 import com.example.todojpa.repository.TodoRepository;

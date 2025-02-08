@@ -1,7 +1,8 @@
 package com.example.todojpa.service;
 
-import com.example.todojpa.dto.*;
-import com.example.todojpa.entity.Comment;
+import com.example.todojpa.dto.request.TodoCreateRequestDto;
+import com.example.todojpa.dto.request.TodoUpdateRequestDto;
+import com.example.todojpa.dto.response.TodoResponse;
 import com.example.todojpa.entity.Todo;
 import com.example.todojpa.entity.User;
 import com.example.todojpa.repository.CommentRepository;
@@ -13,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Service
@@ -60,7 +59,7 @@ public class TodoService {
     }
 
     @Transactional
-    public void updateTodo(TodoUpdateRequestDto requestDto, Long todoId ,Long userId){
+    public void updateTodo(TodoUpdateRequestDto requestDto, Long todoId , Long userId){
         Todo todo = todoRepository.findById(todoId).orElseThrow(() -> new RuntimeException("Todo Not Found"));
 
         if(!todo.getUser().getId().equals(userId)) {

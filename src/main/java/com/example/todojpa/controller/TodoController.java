@@ -1,9 +1,9 @@
 package com.example.todojpa.controller;
 
 
-import com.example.todojpa.dto.TodoCreateRequestDto;
-import com.example.todojpa.dto.TodoResponse;
-import com.example.todojpa.dto.TodoUpdateRequestDto;
+import com.example.todojpa.dto.request.TodoCreateRequestDto;
+import com.example.todojpa.dto.response.TodoResponse;
+import com.example.todojpa.dto.request.TodoUpdateRequestDto;
 import com.example.todojpa.service.TodoService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;

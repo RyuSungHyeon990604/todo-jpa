@@ -1,4 +1,4 @@
-package com.example.todojpa.dto;
+package com.example.todojpa.dto.request;
 
 import lombok.Getter;
 

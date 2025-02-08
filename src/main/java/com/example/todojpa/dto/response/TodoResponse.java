@@ -1,4 +1,4 @@
-package com.example.todojpa.dto;
+package com.example.todojpa.dto.response;
 
 import com.example.todojpa.entity.Todo;
 import lombok.AllArgsConstructor;
