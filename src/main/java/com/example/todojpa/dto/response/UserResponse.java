@@ -5,13 +5,18 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserResponse {
-    String name;
-    String email;
+import java.util.ArrayList;
+import java.util.List;
 
-    public static UserResponse from(User user) {
-        return new UserResponse(user.getName(), user.getEmail());
+@Getter
+public class UserResponse {
+    List<UserDetail> data;
+
+    public UserResponse(List<UserDetail> data) {
+        this.data = data;
     }
+    public UserResponse(UserDetail data) {
+        this.data = List.of(data);
+    }
+
 }
