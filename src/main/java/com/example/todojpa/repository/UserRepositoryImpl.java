@@ -4,9 +4,11 @@ import com.example.todojpa.entity.QUser;
 import com.example.todojpa.entity.User;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class UserRepositoryImpl implements CustomUserRepository {
     private final JPAQueryFactory queryFactory;
 

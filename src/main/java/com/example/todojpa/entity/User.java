@@ -1,5 +1,6 @@
 package com.example.todojpa.entity;
 
+import com.example.todojpa.util.PasswordEncoder;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +26,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String refreshToken;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -43,9 +44,15 @@ public class User extends BaseEntity {
     }
 
     public void updateUser(String name, String email, String password){
-        this.name = name;
-        this.email = email;
-        this.password = password;
+        if(!this.name.equals(name)){
+            this.name = name;
+        }
+        if(!this.email.equals(email)){
+            this.email = email;
+        }
+        if(!PasswordEncoder.matches(password, this.password)){
+            this.password = PasswordEncoder.encode(password);
+        }
     }
 
     public void updateToken(String refreshToken){

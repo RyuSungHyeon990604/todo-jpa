@@ -40,24 +40,22 @@ public class TodoController {
     }
 
     @PostMapping("")
-    public ResponseEntity<TodoResponse> createTodo(@RequestBody TodoCreateRequestDto requestDto,
-                                                   @RequestHeader Long userId) {
-        TodoResponse todo = todoService.createTodo(requestDto, userId);
+    public ResponseEntity<TodoResponse> createTodo(@RequestBody TodoCreateRequestDto requestDto) {
+        TodoResponse todo = todoService.createTodo(requestDto);
         return ResponseEntity.ok(todo);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateTodo(@PathVariable Long id,
-                                           @RequestBody TodoUpdateRequestDto requestDto,
-                                           @RequestHeader Long userId) {
-        todoService.updateTodo(requestDto,id,userId);
+                                           @RequestBody TodoUpdateRequestDto requestDto) {
+        todoService.updateTodo(requestDto,id);
         return ResponseEntity.noContent().build();
     }
 
     //post delete, soft delete 써보기
     @PostMapping("/{id}/delete")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long id, @RequestHeader Long userId) {
-        todoService.deleteTodo(id, userId);
+    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
+        todoService.deleteTodo(id);
         return ResponseEntity.noContent().build();
     }
 }

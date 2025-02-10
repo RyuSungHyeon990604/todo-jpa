@@ -31,12 +31,12 @@ public class AuthService {
             Claims validated = jwtProvider.validateToken(refreshToken);
             String userEmail = validated.get("email", String.class);
 
-            User user = userRepository.findByRefreshTokenAndUseYnTrue(refreshToken).orElseThrow(()-> new RuntimeException("User not found"));
+            User user = userRepository.findByRefreshTokenAndUseYnTrue(refreshToken).orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
             if(userEmail == null || !userEmail.equals(user.getEmail())) {
                 throw new ApplicationException(ErrorCode.INVALID_TOKEN);
             }
 
-            return jwtProvider.generateAccessToken(user.getEmail());
+            return jwtProvider.generateAccessToken(user.getId());
         } catch (ExpiredJwtException e) {
             throw new ApplicationException(ErrorCode.EXPIRED_TOKEN);
         } catch (JwtException e) {
@@ -50,13 +50,13 @@ public class AuthService {
         String email = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
 
         if (PasswordEncoder.matches(password, user.getPassword())) {
-            String accessToken = jwtProvider.generateAccessToken(email);
+            String accessToken = jwtProvider.generateAccessToken(user.getId());
 
             //로그인 요청시 refreshToken 업데이트 해줘야함
-            String refreshToken = jwtProvider.generateRefreshToken(email);
+            String refreshToken = jwtProvider.generateRefreshToken(user.getId());
             user.updateToken(refreshToken);
 
             return new TokenResponse(accessToken, refreshToken);

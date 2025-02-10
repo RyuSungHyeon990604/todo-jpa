@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> search(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> findById(@PathVariable Long id) {
         UserResponse res = userService.findById(id);
 
         return ResponseEntity.ok(res);
@@ -43,20 +43,16 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateUser(@PathVariable("id") Long id,
-                                           @RequestBody UserUpdateRequestDto requestDto,
-                                           @RequestHeader("Authorization") String authorization) {
-        String accessToken = authorization.substring(7);
-        userService.updateUser(id, requestDto, accessToken);
+                                           @RequestBody UserUpdateRequestDto requestDto) {
+        userService.updateUser(id, requestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PostMapping("/{id}/delete")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id,
-                                           @RequestBody UserDeleteRequestDto requestDto,
-                                           @RequestHeader("Authorization") String authorization) {
-        String accessToken = authorization.substring(7);
-        userService.deleteUser(id, requestDto, accessToken);
+                                           @RequestBody UserDeleteRequestDto requestDto) {
+        userService.deleteUser(id, requestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }

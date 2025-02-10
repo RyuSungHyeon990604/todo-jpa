@@ -5,9 +5,12 @@ import com.example.todojpa.dto.request.TodoUpdateRequestDto;
 import com.example.todojpa.dto.response.TodoResponse;
 import com.example.todojpa.entity.Todo;
 import com.example.todojpa.entity.User;
+import com.example.todojpa.exception.ApplicationException;
+import com.example.todojpa.exception.ErrorCode;
 import com.example.todojpa.repository.CommentRepository;
 import com.example.todojpa.repository.TodoRepository;
 import com.example.todojpa.repository.UserRepository;
+import com.example.todojpa.security.MySecurityContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,16 +40,15 @@ public class TodoService {
 
     @Transactional(readOnly = true)
     public TodoResponse findTodoById(Long id) {
-
-        Todo todo = todoRepository.findByIdAndUseYnTrue(id).orElseThrow(() -> new RuntimeException("Todo Not Found"));
+        Todo todo = todoRepository.findByIdAndUseYnTrue(id).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
 
         return TodoResponse.from(todo);
     }
 
     @Transactional
-    public TodoResponse createTodo(TodoCreateRequestDto requestDto, Long userId) {
-
-        User user = userRepository.findByIdAndUseYnTrue(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
+    public TodoResponse createTodo(TodoCreateRequestDto requestDto) {
+        Long userId = getUserIdFromContext();;
+        User user = userRepository.findByIdAndUseYnTrue(userId).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
 
         Todo todo = Todo.builder()
                 .task(requestDto.getTask())
@@ -59,25 +61,35 @@ public class TodoService {
     }
 
     @Transactional
-    public void updateTodo(TodoUpdateRequestDto requestDto, Long todoId , Long userId){
-        Todo todo = todoRepository.findById(todoId).orElseThrow(() -> new RuntimeException("Todo Not Found"));
+    public void updateTodo(TodoUpdateRequestDto requestDto, Long todoId){
+        Todo todo = todoRepository.findById(todoId).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
+        Long userId = getUserIdFromContext();
 
         if(!todo.getUser().getId().equals(userId)) {
-            throw new RuntimeException("권한 없음");
+            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
 
         todo.update(requestDto.getTitle(), requestDto.getTask());
     }
 
     @Transactional
-    public void deleteTodo(Long id, Long userId) {
-        Todo todo = todoRepository.findByIdAndUseYnTrue(id).orElseThrow(() -> new RuntimeException("Todo Not Found"));
+    public void deleteTodo(Long id) {
+        Todo todo = todoRepository.findByIdAndUseYnTrue(id).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
+        Long userId = getUserIdFromContext();
 
         if(!todo.getUser().getId().equals(userId)) {
-            throw new RuntimeException("권한 없음");
+            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
 
         commentRepository.softDeleteByTodoId(todo.getId());
         todo.softDelete();
+    }
+
+    public Long getUserIdFromContext() {
+        if(MySecurityContextHolder.getAuthenticated() != null && MySecurityContextHolder.getAuthenticated().getIsValid()) {
+            return MySecurityContextHolder.getAuthenticated().getUserId();
+        } else {
+            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
+        }
     }
 }

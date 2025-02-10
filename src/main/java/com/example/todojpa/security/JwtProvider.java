@@ -25,7 +25,7 @@ public class JwtProvider {
         key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(String userEmail) {
+    public String generateAccessToken(Long userId) {
         long now = new Date().getTime();
 
         Map<String, Object> headers = new HashMap<>();
@@ -33,20 +33,19 @@ public class JwtProvider {
         headers.put("alg", "HS256");
 
         Map<String, Object> payLoad = new HashMap<>();
-        payLoad.put("email", userEmail);
+        payLoad.put("userId", userId);
         payLoad.put("type", "access");
 
         return Jwts.builder()
                 .setHeader(headers)
                 .setClaims(payLoad)
-                .setSubject(userEmail)
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + ACCESS_EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String generateRefreshToken(String userEmail) {
+    public String generateRefreshToken(Long userId) {
         long now = new Date().getTime();
 
         Map<String, Object> headers = new HashMap<>();
@@ -54,7 +53,7 @@ public class JwtProvider {
         headers.put("alg", "HS256");
 
         Map<String, Object> payLoad = new HashMap<>();
-        payLoad.put("email", userEmail);
+        payLoad.put("userId", userId);
         payLoad.put("type", "refresh");
 
         return Jwts.builder()
@@ -74,7 +73,7 @@ public class JwtProvider {
                 .getBody();
     }
 
-    public String getUserEmail(String token) {
+    public Long getUserId(String token) {
 
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -82,7 +81,7 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        return claims.get("email", String.class);
+        return claims.get("userId", Long.class);
     }
 
 }

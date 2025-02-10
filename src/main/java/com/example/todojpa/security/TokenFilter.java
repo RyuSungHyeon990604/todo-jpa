@@ -10,16 +10,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.PatternMatchUtils;
 
 import java.io.IOException;
-import java.util.Set;
 
 @Slf4j
 @Component
 public class TokenFilter implements Filter {
 
-    // 예외 처리할 경로 + 메서드 조합 (예: GET /api 허용, POST /api 검증)
-    private final Set<String> excludedPaths = Set.of("GET:/todos", "POST:/users", "GET:/users" ,"POST:/auth/login");
+    // 예외 처리할 경로 (메서드:url)
+    private final String[] whiteList = {
+            "GET:/", //그냥 해봄
+            "GET:/todos", //일정조회
+            "GET:/todos/*", //일정 단건 조회
+            "POST:/auth/login", //로그인
+            "GET:/users", //사용자 조회
+            "POST:/users", //사용자 생성, 회원가입
+            "GET:/users/*" //사용자 단건 조회
+    };
     private final JwtProvider jwtProvider;
 
     public TokenFilter(JwtProvider jwtProvider) {
@@ -37,8 +45,9 @@ public class TokenFilter implements Filter {
 
         String method = request.getMethod();
         String url = request.getRequestURI();
+
         //특정 요청 예외처리
-        if(excludedPaths.contains(method+":"+url)) {
+        if(isWhiteList(method +":"+url)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -56,20 +65,27 @@ public class TokenFilter implements Filter {
             return;
         }
 
-        String accessToken = authorization.split(" ")[1];
+        String token = authorization.split(" ")[1];
 
         try {
-            jwtProvider.validateToken(accessToken);
+            jwtProvider.validateToken(token);
         } catch (ExpiredJwtException e) {
-            log.warn("Expired Access token");
+            log.warn("Expired Access token",e);
             sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, ErrorCode.EXPIRED_TOKEN);
             return;
         } catch (JwtException e) {
+            log.warn("JWT token validation failed",e);
             sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, ErrorCode.INVALID_TOKEN);
             return;
         }
-
-        filterChain.doFilter(request, response);
+        //토큰 검증을 통과했다면 ContextHolder에 사용자정보 등록
+        MySecurityContextHolder.setAuthenticated(new UserAuthentication(jwtProvider.getUserId(token), true));
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            log.info("MySecurityContextHolder.clear()");
+            MySecurityContextHolder.clear();
+        }
     }
 
     private void sendErrorResponse(HttpServletResponse response, int status, ErrorCode errorCode) throws IOException {
@@ -81,5 +97,9 @@ public class TokenFilter implements Filter {
         // JSON 객체 생성
         ExceptionResponse errorResponse = new ExceptionResponse(errorCode.getCode(), errorCode.getMessage());
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+    }
+
+    public Boolean isWhiteList(String requestUrl){
+        return PatternMatchUtils.simpleMatch(whiteList, requestUrl);
     }
 }
