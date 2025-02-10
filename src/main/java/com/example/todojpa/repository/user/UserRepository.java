@@ -10,4 +10,5 @@ public interface UserRepository extends JpaRepository<User, Long>, CustomUserRep
     Optional<User> findByIdAndUseYnTrue(Long id);
     List<User> findAllByName(String name);
     Optional<User> findByEmailAndUseYnTrue(String name);
+    Optional<User> findByEmail(String email);
 }

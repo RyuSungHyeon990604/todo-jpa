@@ -4,6 +4,7 @@ public enum ErrorCode {
     INVALID_TOKEN("0002", "Invalid token"),
     BAD_REQUEST("0001", "Bad Request"),
     EXPIRED_TOKEN("0004", "Expired token"),
+    EMAIL_ALREADY_EXISTS("0005", "Email already exists"),
     WRONG_PASSWORD("0007", "Wrong password"),
     USER_NOT_FOUND("0005", "User not found"),
     ACCESS_DENIED("0006", "Access denied"),

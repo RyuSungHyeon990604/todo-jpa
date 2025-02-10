@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -47,7 +48,10 @@ public class UserService {
 
     @Transactional
     public UserResponse createUser(UserCreateRequestDto requestDto) {
-
+        Optional<User> duplicateCheck = userRepository.findByEmail(requestDto.getEmail());
+        if(duplicateCheck.isPresent()){
+            throw new ApplicationException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        }
         User user = User.builder()
                 .name(requestDto.getName())
                 .email(requestDto.getEmail())
