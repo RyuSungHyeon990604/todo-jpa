@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class TodoResponse {
-    private List<TodoDetail> data;
-    private PageInfo pageInfo;
+    private final List<TodoDetail> data;
+    private final PageInfo pageInfo;
 
     public static TodoResponse from(Page<Todo> todos) {
         List<TodoDetail> todoList = todos.getContent().stream().map(TodoDetail::from).toList();

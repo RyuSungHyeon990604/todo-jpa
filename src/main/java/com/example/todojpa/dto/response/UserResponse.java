@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 public class UserResponse {
-    List<UserDetail> data;
+    private final List<UserDetail> data;
 
     public UserResponse(List<UserDetail> data) {
         this.data = data;

@@ -4,22 +4,20 @@ import com.example.todojpa.entity.Comment;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentResponse {
-    private String comment;
-    private Long todoId;
-    private Long userId;
-    private Long id;
-    private Long parentId;
-    private Set<CommentResponse> children;
-    private LocalDateTime createdAt;
+    private final String comment;
+    private final Long todoId;
+    private final Long userId;
+    private final Long id;
+    private final Long parentId;
+    private final Set<CommentResponse> children;
+    private final LocalDateTime createdAt;
 
     public static CommentResponse from(Comment comment) {
        return new CommentResponse(comment.getComment(),

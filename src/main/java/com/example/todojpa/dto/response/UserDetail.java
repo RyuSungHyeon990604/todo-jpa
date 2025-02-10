@@ -10,9 +10,9 @@ import java.util.List;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserDetail {
-    private Long id;
-    private String email;
-    private String name;
+    private final Long id;
+    private final String email;
+    private final String name;
 
     public static UserDetail  from(User user) {
         return new UserDetail(user.getId(), user.getEmail(), user.getName());

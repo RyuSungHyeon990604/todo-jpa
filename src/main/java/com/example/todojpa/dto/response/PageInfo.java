@@ -5,9 +5,9 @@ import org.springframework.data.domain.Page;
 
 @Getter
 public class PageInfo {
-    private int page;
-    private int size;
-    private int total;
+    private final int page;
+    private final int size;
+    private final int total;
     public PageInfo(Page page) {
         this.page = page.getNumber();
         this.size = page.getSize();
