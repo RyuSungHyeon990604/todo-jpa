@@ -5,8 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -15,9 +14,9 @@ public class TodoDetail {
     private String userName;
     private String title;
     private String task;
-    private List<CommentResponse> comments = new ArrayList<>();
+    private Set<CommentResponse> comments;
 
     public static TodoDetail from(Todo todo) {
-        return new TodoDetail(todo.getId(), todo.getUser().getName(), todo.getTitle(), todo.getTask(), todo.getComments().stream().map(CommentResponse::from).toList());
+        return new TodoDetail(todo.getId(), todo.getUser().getName(), todo.getTitle(), todo.getTask(), CommentResponse.convertTree(todo.getComments()));
     }
 }

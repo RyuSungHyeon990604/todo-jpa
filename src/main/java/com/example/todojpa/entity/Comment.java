@@ -3,6 +3,8 @@ package com.example.todojpa.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 
 @Entity
 @Getter
@@ -16,6 +18,11 @@ public class Comment extends BaseEntity {
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    @Setter
+    private Comment parent;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id")
     Todo todo;
 
@@ -24,9 +31,14 @@ public class Comment extends BaseEntity {
     User user;
 
     @Builder
-    public Comment(String comment, Todo todo, User user) {
+    public Comment(Comment parent, String comment, Todo todo, User user) {
+        this.parent = parent;
         this.comment = comment;
         this.todo = todo;
         this.user = user;
+    }
+
+    public void updateComment(String comment) {
+        this.comment = comment;
     }
 }
