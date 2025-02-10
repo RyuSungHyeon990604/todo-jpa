@@ -3,7 +3,6 @@ package com.example.todojpa.controller;
 import com.example.todojpa.dto.request.LoginRequestDto;
 import com.example.todojpa.dto.response.TokenResponse;
 import com.example.todojpa.service.AuthService;
-import org.antlr.v4.runtime.Token;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +26,7 @@ public class AuthController {
     @GetMapping("/reissue")
     public ResponseEntity<TokenResponse> reissue(@RequestHeader("Authorization") String authorization) {
         String refreshToken = authorization.substring(7);
-        String accessToken = authService.reissueAccessToken(refreshToken);
+        String accessToken = authService.reissueAccessToken();
 
         return ResponseEntity.ok(new TokenResponse(accessToken, refreshToken));
     }

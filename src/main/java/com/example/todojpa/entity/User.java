@@ -26,9 +26,6 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column
-    private String refreshToken;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Todo> todos = new ArrayList<>();
 
@@ -36,11 +33,10 @@ public class User extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public User(String name, String email, String password, String refreshToken) {
+    public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.refreshToken = refreshToken;
     }
 
     public void updateUser(String name, String email, String password){
@@ -53,9 +49,5 @@ public class User extends BaseEntity {
         if(!PasswordEncoder.matches(password, this.password)){
             this.password = PasswordEncoder.encode(password);
         }
-    }
-
-    public void updateToken(String refreshToken){
-        this.refreshToken = refreshToken;
     }
 }
