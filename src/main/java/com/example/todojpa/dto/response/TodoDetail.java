@@ -14,9 +14,10 @@ public class TodoDetail {
     private String userName;
     private String title;
     private String task;
+    private int commentSize;
     private Set<CommentResponse> comments;
 
     public static TodoDetail from(Todo todo) {
-        return new TodoDetail(todo.getId(), todo.getUser().getName(), todo.getTitle(), todo.getTask(), CommentResponse.convertTree(todo.getComments()));
+        return new TodoDetail(todo.getId(), todo.getUser().getName(), todo.getTitle(), todo.getTask(), todo.getComments().size(), CommentResponse.convertTree(todo.getComments()));
     }
 }

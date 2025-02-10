@@ -44,8 +44,10 @@ public class TodoRepositoryImpl implements CustomTodoRepository {
             query.where(todo.updatedAt.between(updatedAt.atStartOfDay(), updatedAt.atTime(23, 59, 59)));
             countQuery.where(todo.updatedAt.between(updatedAt.atStartOfDay(), updatedAt.atTime(23, 59, 59)));
         }
-
+        query.where(todo.useYn.eq(true));
         query.orderBy(todo.updatedAt.desc());
+
+        countQuery.where(todo.useYn.eq(true));
 
         if (pageable != null) {
             query.offset(pageable.getOffset()).limit(pageable.getPageSize());
