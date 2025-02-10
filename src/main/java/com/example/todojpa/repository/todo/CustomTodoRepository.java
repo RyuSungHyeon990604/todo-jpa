@@ -1,4 +1,4 @@
-package com.example.todojpa.repository;
+package com.example.todojpa.repository.todo;
 
 import com.example.todojpa.entity.Todo;
 import org.springframework.data.domain.Page;

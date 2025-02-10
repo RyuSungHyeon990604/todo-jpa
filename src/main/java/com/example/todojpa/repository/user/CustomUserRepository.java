@@ -1,4 +1,4 @@
-package com.example.todojpa.repository;
+package com.example.todojpa.repository.user;
 
 import com.example.todojpa.entity.User;
 

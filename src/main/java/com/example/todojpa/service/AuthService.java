@@ -6,19 +6,16 @@ import com.example.todojpa.entity.User;
 import com.example.todojpa.entity.UserRefreshToken;
 import com.example.todojpa.exception.ApplicationException;
 import com.example.todojpa.exception.ErrorCode;
-import com.example.todojpa.repository.UserRefreshTokenRepository;
-import com.example.todojpa.repository.UserRepository;
+import com.example.todojpa.repository.refreshToken.UserRefreshTokenRepository;
+import com.example.todojpa.repository.user.UserRepository;
 import com.example.todojpa.security.JwtProvider;
 import com.example.todojpa.security.MySecurityContextHolder;
 import com.example.todojpa.util.PasswordEncoder;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public class AuthService {

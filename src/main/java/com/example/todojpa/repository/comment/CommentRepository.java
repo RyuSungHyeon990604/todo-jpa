@@ -1,4 +1,4 @@
-package com.example.todojpa.repository;
+package com.example.todojpa.repository.comment;
 
 import com.example.todojpa.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
