@@ -82,8 +82,13 @@ public class UserService {
 
     @Transactional
     public void updateUser(Long userId, UserUpdateRequestDto requestDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
         Long id = getUserIdFromContext();
+
+        if(!id.equals(userId)) {
+            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
+        }
+        User user = userRepository.findById(id).orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
+
 
         if(!id.equals(user.getId())) {
             throw new ApplicationException(ErrorCode.INVALID_TOKEN);
