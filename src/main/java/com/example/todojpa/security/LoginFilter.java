@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-public class TokenFilter implements Filter {
+public class LoginFilter implements Filter {
 
     // 예외 처리할 경로 (메서드:url)
     private final String[] whiteList = {
@@ -30,7 +30,7 @@ public class TokenFilter implements Filter {
     };
     private final JwtProvider jwtProvider;
 
-    public TokenFilter(JwtProvider jwtProvider) {
+    public LoginFilter(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
 
