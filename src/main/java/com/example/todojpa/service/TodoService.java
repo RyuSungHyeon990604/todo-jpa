@@ -7,7 +7,6 @@ import com.example.todojpa.entity.Todo;
 import com.example.todojpa.entity.User;
 import com.example.todojpa.exception.ApplicationException;
 import com.example.todojpa.exception.ErrorCode;
-import com.example.todojpa.repository.comment.CommentRepository;
 import com.example.todojpa.repository.todo.TodoRepository;
 import com.example.todojpa.repository.user.UserRepository;
 import com.example.todojpa.security.MySecurityContextHolder;
@@ -23,12 +22,10 @@ import java.time.LocalDate;
 public class TodoService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
 
-    public TodoService(TodoRepository todoRepository, UserRepository userRepository, CommentRepository commentRepository) {
+    public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
         this.todoRepository = todoRepository;
         this.userRepository = userRepository;
-        this.commentRepository = commentRepository;
     }
 
     @Transactional(readOnly = true)
@@ -40,7 +37,7 @@ public class TodoService {
 
     @Transactional(readOnly = true)
     public TodoResponse findTodoById(Long id) {
-        Todo todo = todoRepository.findByIdAndUseYnTrue(id).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
+        Todo todo = todoRepository.findById(id).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
 
         return TodoResponse.from(todo);
     }
@@ -48,7 +45,7 @@ public class TodoService {
     @Transactional
     public TodoResponse createTodo(TodoCreateRequestDto requestDto) {
         Long userId = getUserIdFromContext();;
-        User user = userRepository.findByIdAndUseYnTrue(userId).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
 
         Todo todo = Todo.builder()
                 .task(requestDto.getTask())
@@ -74,15 +71,14 @@ public class TodoService {
 
     @Transactional
     public void deleteTodo(Long id) {
-        Todo todo = todoRepository.findByIdAndUseYnTrue(id).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
+        Todo todo = todoRepository.findById(id).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
         Long userId = getUserIdFromContext();
 
         if(!todo.getUser().getId().equals(userId)) {
             throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
 
-        commentRepository.softDeleteByTodoId(todo.getId());
-        todo.softDelete();
+        todoRepository.delete(todo);
     }
 
     public Long getUserIdFromContext() {

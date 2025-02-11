@@ -1,19 +1,22 @@
 package com.example.todojpa.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@SQLDelete(sql = "update todo set deleted = true where id = ?")
+@SQLRestriction("deleted = false")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Todo extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +34,7 @@ public class Todo extends BaseEntity {
     private String task;
 
     @BatchSize(size = 10)//지연로딩 묶어서 호출하도록 BatchSize설정
-    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "todo")
     List<Comment> comments = new ArrayList<>();
 
     @Builder

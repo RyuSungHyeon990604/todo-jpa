@@ -29,7 +29,7 @@ public class CommentService {
     }
 
     public CommentResponse findAllCommentByTodoId(Long todoId) {
-        List<Comment> comments = commentRepository.findAllByTodoIdAndUseYnTrue(todoId);
+        List<Comment> comments = commentRepository.findAllByTodoId(todoId);
 
         return CommentResponse.from(comments);
     }
@@ -65,7 +65,7 @@ public class CommentService {
             throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
 
-        comment.softDelete();
+        commentRepository.delete(comment);
     }
 
     @Transactional

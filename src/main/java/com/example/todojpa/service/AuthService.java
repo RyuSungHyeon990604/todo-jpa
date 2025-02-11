@@ -56,7 +56,7 @@ public class AuthService {
     public TokenResponse loginJwt(LoginRequestDto loginRequestDto) {
         String email = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
-        User user = userRepository.findByEmailAndUseYnTrue(email).orElseThrow(()->new ApplicationException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByEmail(email).orElseThrow(()->new ApplicationException(ErrorCode.USER_NOT_FOUND));
 
         //비밀번호검증
         if (!PasswordEncoder.matches(password, user.getPassword())) {

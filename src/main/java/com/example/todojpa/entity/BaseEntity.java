@@ -13,18 +13,11 @@ import java.time.LocalDateTime;
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEntity {
+public abstract class BaseEntity extends DeleteCheckEntity{
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    @Column(nullable = false)
-    private Boolean useYn = true;
-
-    public void softDelete(){
-        this.useYn = false;
-    }
 }

@@ -23,13 +23,9 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final TodoRepository todoRepository;
-    private final CommentRepository commentRepository;
 
-    public UserService(UserRepository userRepository, TodoRepository todoRepository, CommentRepository commentRepository, JwtProvider jwtProvider) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.todoRepository = todoRepository;
-        this.commentRepository = commentRepository;
     }
 
     @Transactional
@@ -75,9 +71,7 @@ public class UserService {
             throw new ApplicationException(ErrorCode.WRONG_PASSWORD);
         }
 
-        commentRepository.softDeleteByUserId(user.getId());
-        todoRepository.softDeleteByUserId(user.getId());
-        user.softDelete();
+        userRepository.delete(user);
     }
 
     @Transactional
