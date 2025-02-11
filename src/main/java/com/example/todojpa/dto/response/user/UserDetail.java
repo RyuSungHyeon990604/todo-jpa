@@ -1,4 +1,4 @@
-package com.example.todojpa.dto.response;
+package com.example.todojpa.dto.response.user;
 
 import com.example.todojpa.entity.User;
 import lombok.AccessLevel;

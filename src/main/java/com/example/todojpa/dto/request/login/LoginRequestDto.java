@@ -1,8 +1,7 @@
-package com.example.todojpa.dto.request;
+package com.example.todojpa.dto.request.login;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter

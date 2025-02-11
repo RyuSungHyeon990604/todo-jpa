@@ -1,7 +1,7 @@
 package com.example.todojpa.service;
 
-import com.example.todojpa.dto.request.LoginRequestDto;
-import com.example.todojpa.dto.response.TokenResponse;
+import com.example.todojpa.dto.request.login.LoginRequestDto;
+import com.example.todojpa.dto.response.token.TokenResponse;
 import com.example.todojpa.entity.User;
 import com.example.todojpa.entity.UserRefreshToken;
 import com.example.todojpa.exception.ApplicationException;

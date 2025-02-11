@@ -1,4 +1,4 @@
-package com.example.todojpa.dto.response;
+package com.example.todojpa.dto.response.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

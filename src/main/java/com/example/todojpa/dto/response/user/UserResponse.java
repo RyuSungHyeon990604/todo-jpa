@@ -1,11 +1,7 @@
-package com.example.todojpa.dto.response;
+package com.example.todojpa.dto.response.user;
 
-import com.example.todojpa.entity.User;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

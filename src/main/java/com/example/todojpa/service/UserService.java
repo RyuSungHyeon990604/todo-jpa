@@ -1,17 +1,14 @@
 package com.example.todojpa.service;
 
-import com.example.todojpa.dto.request.UserCreateRequestDto;
-import com.example.todojpa.dto.request.UserDeleteRequestDto;
-import com.example.todojpa.dto.response.UserDetail;
-import com.example.todojpa.dto.response.UserResponse;
-import com.example.todojpa.dto.request.UserUpdateRequestDto;
+import com.example.todojpa.dto.request.user.UserCreateRequestDto;
+import com.example.todojpa.dto.request.user.UserDeleteRequestDto;
+import com.example.todojpa.dto.response.user.UserDetail;
+import com.example.todojpa.dto.response.user.UserResponse;
+import com.example.todojpa.dto.request.user.UserUpdateRequestDto;
 import com.example.todojpa.entity.User;
 import com.example.todojpa.exception.ApplicationException;
 import com.example.todojpa.exception.ErrorCode;
-import com.example.todojpa.repository.comment.CommentRepository;
-import com.example.todojpa.repository.todo.TodoRepository;
 import com.example.todojpa.repository.user.UserRepository;
-import com.example.todojpa.security.JwtProvider;
 import com.example.todojpa.security.MySecurityContextHolder;
 import com.example.todojpa.util.PasswordEncoder;
 import jakarta.transaction.Transactional;

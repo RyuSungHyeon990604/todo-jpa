@@ -1,16 +1,14 @@
 package com.example.todojpa.controller;
 
-import com.example.todojpa.dto.request.UserCreateRequestDto;
-import com.example.todojpa.dto.request.UserDeleteRequestDto;
-import com.example.todojpa.dto.request.UserUpdateRequestDto;
-import com.example.todojpa.dto.response.UserResponse;
+import com.example.todojpa.dto.request.user.UserCreateRequestDto;
+import com.example.todojpa.dto.request.user.UserDeleteRequestDto;
+import com.example.todojpa.dto.request.user.UserUpdateRequestDto;
+import com.example.todojpa.dto.response.user.UserResponse;
 import com.example.todojpa.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")

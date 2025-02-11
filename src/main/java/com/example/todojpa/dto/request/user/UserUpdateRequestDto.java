@@ -1,14 +1,16 @@
-package com.example.todojpa.dto.request;
+package com.example.todojpa.dto.request.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
-import javax.annotation.processing.Generated;
-
 @Getter
-public class UserDeleteRequestDto {
+public class UserUpdateRequestDto {
     @NotBlank
+    String name;
+    @NotBlank @Size(min = 8, max = 50)
     String password;
+    @NotBlank @Email
+    String email;
 }

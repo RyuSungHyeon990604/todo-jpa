@@ -1,14 +1,11 @@
-package com.example.todojpa.dto.response;
+package com.example.todojpa.dto.response.todo;
 
-import com.example.todojpa.entity.BaseEntity;
-import com.example.todojpa.entity.DeleteCheckEntity;
 import com.example.todojpa.entity.Todo;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

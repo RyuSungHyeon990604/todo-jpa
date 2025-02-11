@@ -1,9 +1,9 @@
 package com.example.todojpa.controller;
 
 
-import com.example.todojpa.dto.request.TodoCreateRequestDto;
-import com.example.todojpa.dto.response.TodoResponse;
-import com.example.todojpa.dto.request.TodoUpdateRequestDto;
+import com.example.todojpa.dto.request.todo.TodoCreateRequestDto;
+import com.example.todojpa.dto.response.todo.TodoResponse;
+import com.example.todojpa.dto.request.todo.TodoUpdateRequestDto;
 import com.example.todojpa.service.TodoService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;

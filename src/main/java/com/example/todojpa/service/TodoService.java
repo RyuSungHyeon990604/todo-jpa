@@ -1,8 +1,8 @@
 package com.example.todojpa.service;
 
-import com.example.todojpa.dto.request.TodoCreateRequestDto;
-import com.example.todojpa.dto.request.TodoUpdateRequestDto;
-import com.example.todojpa.dto.response.TodoResponse;
+import com.example.todojpa.dto.request.todo.TodoCreateRequestDto;
+import com.example.todojpa.dto.request.todo.TodoUpdateRequestDto;
+import com.example.todojpa.dto.response.todo.TodoResponse;
 import com.example.todojpa.entity.Todo;
 import com.example.todojpa.entity.User;
 import com.example.todojpa.exception.ApplicationException;

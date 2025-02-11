@@ -1,7 +1,7 @@
 package com.example.todojpa.controller;
 
-import com.example.todojpa.dto.request.LoginRequestDto;
-import com.example.todojpa.dto.response.TokenResponse;
+import com.example.todojpa.dto.request.login.LoginRequestDto;
+import com.example.todojpa.dto.response.token.TokenResponse;
 import com.example.todojpa.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

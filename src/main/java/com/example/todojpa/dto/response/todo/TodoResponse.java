@@ -1,5 +1,6 @@
-package com.example.todojpa.dto.response;
+package com.example.todojpa.dto.response.todo;
 
+import com.example.todojpa.dto.response.PageInfo;
 import com.example.todojpa.entity.Todo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

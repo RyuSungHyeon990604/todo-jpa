@@ -1,4 +1,4 @@
-package com.example.todojpa.dto.request;
+package com.example.todojpa.dto.request.todo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

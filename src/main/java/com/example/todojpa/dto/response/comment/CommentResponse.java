@@ -1,5 +1,6 @@
-package com.example.todojpa.dto.response;
+package com.example.todojpa.dto.response.comment;
 
+import com.example.todojpa.dto.response.PageInfo;
 import com.example.todojpa.entity.Comment;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
