@@ -22,4 +22,8 @@ public class UserRefreshToken extends BaseEntity {
         this.userId = userId;
         this.refreshToken = refreshToken;
     }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }

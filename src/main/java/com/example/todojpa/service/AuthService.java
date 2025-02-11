@@ -30,11 +30,20 @@ public class AuthService {
     }
 
     @Transactional
-    public String reissueAccessToken() {
+    public TokenResponse reissueAccessToken() {
         try {
+            //인증정보로 refresh이 존재하는지 확인
             Long userId = getUserIdFromContext();
             UserRefreshToken token = refreshTokenRepository.findById(userId).orElseThrow(() -> new ApplicationException(ErrorCode.INVALID_TOKEN));
-            return jwtProvider.generateAccessToken(token.getUserId());
+
+            //토큰 재발행
+            String refreshToken = jwtProvider.generateRefreshToken(userId);
+            String accessToken = jwtProvider.generateAccessToken(userId);
+
+            //refresh 토큰은 업데이트
+            token.updateRefreshToken(refreshToken);
+
+            return new TokenResponse(accessToken,  refreshToken);
         } catch (ExpiredJwtException e) {
             throw new ApplicationException(ErrorCode.EXPIRED_TOKEN);
         } catch (JwtException e) {

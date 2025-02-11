@@ -24,10 +24,9 @@ public class AuthController {
     }
 
     @GetMapping("/reissue")
-    public ResponseEntity<TokenResponse> reissue(@RequestHeader("Authorization") String authorization) {
-        String refreshToken = authorization.substring(7);
-        String accessToken = authService.reissueAccessToken();
+    public ResponseEntity<TokenResponse> reissue() {
+        TokenResponse tokenResponse = authService.reissueAccessToken();
 
-        return ResponseEntity.ok(new TokenResponse(accessToken, refreshToken));
+        return ResponseEntity.ok(tokenResponse);
     }
 }
