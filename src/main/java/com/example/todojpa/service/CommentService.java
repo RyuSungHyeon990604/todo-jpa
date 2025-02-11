@@ -15,7 +15,7 @@ import com.example.todojpa.security.MySecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -26,6 +26,12 @@ public class CommentService {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.todoRepository = todoRepository;
+    }
+
+    public CommentResponse findAllCommentByTodoId(Long todoId) {
+        List<Comment> comments = commentRepository.findAllByTodoIdAndUseYnTrue(todoId);
+
+        return CommentResponse.from(comments);
     }
 
     @Transactional
@@ -48,7 +54,7 @@ public class CommentService {
 
         Comment save = commentRepository.save(comment);
 
-        return CommentResponse.from(save);
+        return CommentResponse.from(List.of(save));
     }
 
     @Transactional

@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Modifying
     @Query(" update Comment c" +
@@ -22,4 +24,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "   and c.todo.id = :todoId" +
             "   and c.useYn = true")
     int softDeleteByTodoId(@Param("todoId") Long todoId);
+
+    List<Comment> findAllByTodoIdAndUseYnTrue(Long todoId);
 }

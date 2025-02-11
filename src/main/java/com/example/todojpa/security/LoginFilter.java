@@ -26,7 +26,8 @@ public class LoginFilter implements Filter {
             "POST:/auth/login", //로그인
             "GET:/users", //사용자 조회
             "POST:/users", //사용자 생성, 회원가입
-            "GET:/users/*" //사용자 단건 조회
+            "GET:/users/*", //사용자 단건 조회
+            "GET:/comments*"//댓글조회
     };
     private final JwtProvider jwtProvider;
 

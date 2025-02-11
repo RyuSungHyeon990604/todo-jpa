@@ -1,5 +1,6 @@
 package com.example.todojpa.dto.response;
 
+import com.example.todojpa.entity.BaseEntity;
 import com.example.todojpa.entity.Todo;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,9 +18,14 @@ public class TodoDetail {
     private final String task;
     private final int commentSize;
     private final LocalDateTime createdAt;
-    private final Set<CommentResponse> comments;
+    //private final Set<CommentResponse> comments;
 
     public static TodoDetail from(Todo todo) {
-        return new TodoDetail(todo.getId(), todo.getUser().getName(), todo.getTitle(), todo.getTask(), todo.getComments().size(), todo.getUpdatedAt(), CommentResponse.convertTree(todo.getComments()));
+        int size = todo.getComments().stream()
+                .filter(BaseEntity::getUseYn)
+                .toList()
+                .size();
+
+        return new TodoDetail(todo.getId(), todo.getUser().getName(), todo.getTitle(), todo.getTask(), size, todo.getUpdatedAt());
     }
 }

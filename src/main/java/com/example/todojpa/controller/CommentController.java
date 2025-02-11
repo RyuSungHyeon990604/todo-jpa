@@ -17,6 +17,13 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @GetMapping("/{todoId}")
+    public ResponseEntity<CommentResponse> getComments(@PathVariable Long todoId) {
+        CommentResponse response = commentService.findAllCommentByTodoId(todoId);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/{todoId}")
     public ResponseEntity<CommentResponse> addComment(@PathVariable Long todoId,
                                                       @RequestBody CommentCreateRequestDto comment) {
