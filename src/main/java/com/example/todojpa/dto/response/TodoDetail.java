@@ -17,11 +17,10 @@ public class TodoDetail {
     private final String userName;
     private final String title;
     private final String task;
-    private final int commentSize;
+    private final Long commentCount;
     private final LocalDateTime createdAt;
-    //private final Set<CommentResponse> comments;
 
     public static TodoDetail from(Todo todo) {
-        return new TodoDetail(todo.getId(), todo.getUser().getName(), todo.getTitle(), todo.getTask(), todo.getComments().size(), todo.getUpdatedAt());
+        return new TodoDetail(todo.getId(), todo.getUser().getName(), todo.getTitle(), todo.getTask(), todo.getCommentCount(), todo.getUpdatedAt());
     }
 }

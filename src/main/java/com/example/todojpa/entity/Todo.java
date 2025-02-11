@@ -5,12 +5,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -33,9 +31,12 @@ public class Todo extends BaseEntity {
     @Column(nullable = false)
     private String task;
 
-    @BatchSize(size = 10)//지연로딩 묶어서 호출하도록 BatchSize설정
-    @OneToMany(mappedBy = "todo")
-    List<Comment> comments = new ArrayList<>();
+    @Formula("( select count(c.id) " +
+            "    from comment c " +
+            "   where c.todo_id = id" +
+            "     and c.deleted = false )")
+    private Long commentCount;
+
 
     @Builder
     public Todo(User user, String title, String task) {
