@@ -17,6 +17,9 @@ import io.jsonwebtoken.JwtException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Service
 public class AuthService {
     private final JwtProvider jwtProvider;
@@ -76,6 +79,17 @@ public class AuthService {
         return new TokenResponse(accessToken, refreshToken);
     }
 
+    @Transactional
+    public void logOut() {
+        //refresh token을 삭제하고
+        Long userId = getUserIdFromContext();
+        refreshTokenRepository.deleteById(userId);
+
+        //사용자의 로그아웃시간을 갱신
+        User user = userRepository.findById(userId).orElseThrow(()->new ApplicationException(ErrorCode.USER_NOT_FOUND));
+        user.updateLogoutTime(LocalDateTime.now());
+    }
+
     public Long getUserIdFromContext() {
         if(MySecurityContextHolder.getAuthenticated() != null && MySecurityContextHolder.getAuthenticated().getIsValid()) {
             return MySecurityContextHolder.getAuthenticated().getUserId();
@@ -83,5 +97,6 @@ public class AuthService {
             throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
     }
+
 
 }

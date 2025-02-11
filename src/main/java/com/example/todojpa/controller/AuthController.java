@@ -5,6 +5,7 @@ import com.example.todojpa.dto.response.token.TokenResponse;
 import com.example.todojpa.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,21 +22,24 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> loginJwt(@RequestBody LoginRequestDto loginRequestDto,
-                                                  HttpServletResponse response) {
+    public ResponseEntity<TokenResponse> loginJwt(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         TokenResponse token = authService.loginJwt(loginRequestDto);
         response.setHeader("Authorization", "Bearer " + token.getAccessToken());
 
         //refresh 토큰은 httpOnly에 담는다
         setCookie(response, token.getRefreshToken());
 
-
-
         return ResponseEntity.ok(token);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logoutJwt() {
+        authService.logOut();
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @PostMapping("/reissue")
-    public ResponseEntity<TokenResponse> reissue(HttpServletResponse response) throws UnsupportedEncodingException {
+    public ResponseEntity<TokenResponse> reissue(HttpServletResponse response) {
         TokenResponse tokenResponse = authService.reissueAccessToken();
         response.setHeader("Authorization", "Bearer "+tokenResponse.getAccessToken());
 

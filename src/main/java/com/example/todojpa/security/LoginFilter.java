@@ -1,7 +1,9 @@
 package com.example.todojpa.security;
 
+import com.example.todojpa.entity.User;
 import com.example.todojpa.exception.ErrorCode;
 import com.example.todojpa.exception.ExceptionResponse;
+import com.example.todojpa.repository.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -32,9 +35,11 @@ public class LoginFilter implements Filter {
             "POST:/auth/reissue"
     };
     private final JwtProvider jwtProvider;
+    private final UserRepository userRepository;
 
-    public LoginFilter(JwtProvider jwtProvider) {
+    public LoginFilter(JwtProvider jwtProvider, UserRepository userRepository) {
         this.jwtProvider = jwtProvider;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -68,16 +73,20 @@ public class LoginFilter implements Filter {
             return;
         }
 
+        //헤더에서 토큰 분리
         String token = authorization.split(" ")[1];
 
         try {
+            //토큰 검증
             Claims claims = jwtProvider.validateToken(token);
-            String tokenType = claims.get("type",String.class);
+
             //엑세스토큰이 아니라면 오류 반환
+            String tokenType = claims.get("type",String.class);
             if(!tokenType.equals("access")) {
                 sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, ErrorCode.INVALID_TOKEN);
                 return;
             }
+
         } catch (ExpiredJwtException e) {
             log.warn("Expired Access token",e);
             sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, ErrorCode.EXPIRED_TOKEN);
@@ -87,12 +96,23 @@ public class LoginFilter implements Filter {
             sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, ErrorCode.INVALID_TOKEN);
             return;
         }
-        //토큰 검증을 통과했다면 ContextHolder에 사용자정보 등록
-        MySecurityContextHolder.setAuthenticated(new UserAuthentication(jwtProvider.getUserId(token), true));
+
+        //사용자 로그아웃이후에 발급한 토큰인지 검증, 이전에 발급한거라면 사용불가한 토큰
+        Long userId = jwtProvider.getUserId(token);
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty() ||
+                (user.get().getLastLogoutTime()!= null && jwtProvider.isIssuedBefore(token, user.get().getLastLogoutTime()))) {
+            sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, ErrorCode.INVALID_TOKEN);
+            return;
+        }
+
+        //모든 검증을 통과했다면 ContextHolder에 사용자정보 등록
+        MySecurityContextHolder.setAuthenticated(new UserAuthentication(userId, true));
         try {
             filterChain.doFilter(request, response);
         } finally {
             log.info("MySecurityContextHolder.clear()");
+            //요청 로직이후 ContextHolder 비우기
             MySecurityContextHolder.clear();
         }
     }

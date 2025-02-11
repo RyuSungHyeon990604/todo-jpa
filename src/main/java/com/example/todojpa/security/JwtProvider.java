@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,7 +76,6 @@ public class JwtProvider {
     }
 
     public Long getUserId(String token) {
-
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -82,6 +83,17 @@ public class JwtProvider {
                 .getBody();
 
         return claims.get("userId", Long.class);
+    }
+
+    //date 이전에 발급한 토큰인지 검증
+    public Boolean isIssuedBefore(String token, LocalDateTime date) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getIssuedAt()
+                .before(Timestamp.valueOf(date));
     }
 
 }

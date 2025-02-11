@@ -5,9 +5,11 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,11 +38,19 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 
+    @Column
+    private LocalDateTime lastLogoutTime;
+
     @Builder
     public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
+
+    }
+
+    public void updateLogoutTime(LocalDateTime newLogoutTime) {
+        this.lastLogoutTime = newLogoutTime;
     }
 
     public void updateUser(String name, String email, String password){
@@ -54,4 +64,5 @@ public class User extends BaseEntity {
             this.password = PasswordEncoder.encode(password);
         }
     }
+
 }
