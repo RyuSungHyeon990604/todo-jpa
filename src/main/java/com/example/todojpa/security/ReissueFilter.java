@@ -33,6 +33,11 @@ public class ReissueFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, ErrorCode.ACCESS_DENIED);
+            return;
+        }
+
         String refreshToken = null;
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("refresh")) {
