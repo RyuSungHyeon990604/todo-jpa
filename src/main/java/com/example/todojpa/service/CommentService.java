@@ -29,7 +29,7 @@ public class CommentService {
     }
 
     public CommentResponse findAllCommentByTodoId(Long todoId) {
-        List<Comment> comments = commentRepository.findAllByTodoId(todoId);
+        List<Comment> comments = commentRepository.findAllByTodoIdOrderByCreatedAt(todoId);
 
         return CommentResponse.from(comments);
     }

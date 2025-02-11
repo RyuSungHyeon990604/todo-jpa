@@ -5,6 +5,7 @@ import com.example.todojpa.dto.request.TodoCreateRequestDto;
 import com.example.todojpa.dto.response.TodoResponse;
 import com.example.todojpa.dto.request.TodoUpdateRequestDto;
 import com.example.todojpa.service.TodoService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,14 +41,14 @@ public class TodoController {
     }
 
     @PostMapping("")
-    public ResponseEntity<TodoResponse> createTodo(@RequestBody TodoCreateRequestDto requestDto) {
+    public ResponseEntity<TodoResponse> createTodo(@RequestBody @Valid TodoCreateRequestDto requestDto) {
         TodoResponse todo = todoService.createTodo(requestDto);
         return ResponseEntity.ok(todo);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateTodo(@PathVariable Long id,
-                                           @RequestBody TodoUpdateRequestDto requestDto) {
+                                           @RequestBody @Valid TodoUpdateRequestDto requestDto) {
         todoService.updateTodo(requestDto,id);
         return ResponseEntity.noContent().build();
     }

@@ -5,6 +5,7 @@ import com.example.todojpa.dto.request.UserDeleteRequestDto;
 import com.example.todojpa.dto.request.UserUpdateRequestDto;
 import com.example.todojpa.dto.response.UserResponse;
 import com.example.todojpa.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,14 +37,14 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserCreateRequestDto requestDto) {
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserCreateRequestDto requestDto) {
         UserResponse user = userService.createUser(requestDto);
         return ResponseEntity.ok(user);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateUser(@PathVariable("id") Long id,
-                                           @RequestBody UserUpdateRequestDto requestDto) {
+                                           @RequestBody @Valid UserUpdateRequestDto requestDto) {
         userService.updateUser(id, requestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -51,7 +52,7 @@ public class UserController {
 
     @PostMapping("/{id}/delete")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id,
-                                           @RequestBody UserDeleteRequestDto requestDto) {
+                                           @RequestBody @Valid UserDeleteRequestDto requestDto) {
         userService.deleteUser(id, requestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);

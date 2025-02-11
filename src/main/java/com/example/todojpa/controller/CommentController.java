@@ -3,6 +3,7 @@ package com.example.todojpa.controller;
 import com.example.todojpa.dto.request.CommentCreateRequestDto;
 import com.example.todojpa.dto.response.CommentResponse;
 import com.example.todojpa.service.CommentService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class CommentController {
 
     @PostMapping("/{todoId}")
     public ResponseEntity<CommentResponse> addComment(@PathVariable Long todoId,
-                                                      @RequestBody CommentCreateRequestDto comment) {
+                                                      @RequestBody @Valid CommentCreateRequestDto comment) {
         CommentResponse commentResponse = commentService.addComment(comment, todoId);
         return ResponseEntity.ok(commentResponse);
     }
