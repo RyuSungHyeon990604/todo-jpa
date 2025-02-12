@@ -1,7 +1,10 @@
 package com.example.todojpa.repository.todo;
 
+import com.example.todojpa.dto.response.todo.TodoDetail;
+import com.example.todojpa.entity.QComment;
 import com.example.todojpa.entity.QTodo;
 import com.example.todojpa.entity.Todo;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -26,10 +29,13 @@ public class TodoRepositoryImpl implements CustomTodoRepository {
     }
 
     @Override
-    public Page<Todo> search(String userName, LocalDate updatedAt, Pageable pageable) {
+    public Page<TodoDetail> search(String userName, LocalDate updatedAt, Pageable pageable) {
         QTodo todo = QTodo.todo;
-        JPAQuery<Todo> query = queryFactory.selectFrom(todo)
-                .join(todo.user).fetchJoin();
+        QComment comment = QComment.comment1;
+        JPAQuery<TodoDetail> query = queryFactory.select(Projections.constructor(TodoDetail.class, todo, comment.id.count()))
+                .from(todo)
+                .join(todo.user).fetchJoin()
+                .leftJoin(todo.comments,comment);
         //카운트 쿼리? 일단 해보기
         JPAQuery<Long> countQuery = queryFactory.select(todo.count()).from(todo);
 
@@ -44,13 +50,14 @@ public class TodoRepositoryImpl implements CustomTodoRepository {
             query.where(todo.updatedAt.between(updatedAt.atStartOfDay(), updatedAt.atTime(23, 59, 59)));
             countQuery.where(todo.updatedAt.between(updatedAt.atStartOfDay(), updatedAt.atTime(23, 59, 59)));
         }
+        query.groupBy(todo.id);
         query.orderBy(todo.updatedAt.desc());
 
         if (pageable != null) {
             query.offset(pageable.getOffset()).limit(pageable.getPageSize());
         } else query.offset(DEFAULT_PAGE_NUMBER).limit(DEFAULT_PAGE_SIZE);
 
-        List<Todo> fetch = query.fetch();
+        List<TodoDetail> fetch = query.fetch();
 
         Long total = countQuery.fetchOne();
 

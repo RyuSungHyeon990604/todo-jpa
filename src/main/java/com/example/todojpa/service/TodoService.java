@@ -2,6 +2,7 @@ package com.example.todojpa.service;
 
 import com.example.todojpa.dto.request.todo.TodoCreateRequestDto;
 import com.example.todojpa.dto.request.todo.TodoUpdateRequestDto;
+import com.example.todojpa.dto.response.todo.TodoDetail;
 import com.example.todojpa.dto.response.todo.TodoResponse;
 import com.example.todojpa.entity.Todo;
 import com.example.todojpa.entity.User;
@@ -29,7 +30,7 @@ public class TodoService {
 
     @Transactional(readOnly = true)
     public TodoResponse search(String userName, LocalDate date, Pageable page) {
-        Page<Todo> todos = todoRepository.search(userName, date, page);
+        Page<TodoDetail> todos = todoRepository.search(userName, date, page);
 
         return TodoResponse.from(todos);
     }

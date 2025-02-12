@@ -14,9 +14,8 @@ public class TodoResponse {
     private final List<TodoDetail> data;
     private final PageInfo pageInfo;
 
-    public static TodoResponse from(Page<Todo> todos) {
-        List<TodoDetail> todoList = todos.getContent().stream().map(TodoDetail::from).toList();
-        return new TodoResponse(todoList, new PageInfo(todos));
+    public static TodoResponse from(Page<TodoDetail> todos) {
+        return new TodoResponse(todos.getContent(), new PageInfo(todos));
     }
 
     public static TodoResponse from(Todo todo) {
