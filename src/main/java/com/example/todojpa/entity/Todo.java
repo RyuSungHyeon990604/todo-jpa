@@ -9,6 +9,9 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Getter
@@ -31,11 +34,9 @@ public class Todo extends BaseEntity {
     @Column(nullable = false)
     private String task;
 
-    @Formula("( select count(c.id) " +
-            "    from comment c " +
-            "   where c.todo_id = id" +
-            "     and c.deleted = false )")
-    private Long commentCount;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "todo")
+    @BatchSize(size = 10)
+    private List<Comment> comments = new ArrayList<>();
 
 
     @Builder
@@ -48,5 +49,9 @@ public class Todo extends BaseEntity {
     public void update(String title, String task){
         this.title = title;
         this.task = task;
+    }
+
+    public int getCommentCount(){
+        return comments.size();
     }
 }
