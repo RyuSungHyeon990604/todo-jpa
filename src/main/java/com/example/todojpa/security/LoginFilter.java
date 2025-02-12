@@ -100,7 +100,7 @@ public class LoginFilter implements Filter {
         //사용자 로그아웃이후에 발급한 토큰인지 검증, 이전에 발급한거라면 사용불가한 토큰
         Long userId = jwtProvider.getUserId(token);
         Timestamp lastLogoutTime = userRepository.findLastLogoutTimeById(userId);
-        if(jwtProvider.isIssuedBefore(token, lastLogoutTime)) {
+        if(lastLogoutTime != null && jwtProvider.isIssuedBefore(token, lastLogoutTime)) {
             sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, ErrorCode.INVALID_TOKEN);
             return;
         }
