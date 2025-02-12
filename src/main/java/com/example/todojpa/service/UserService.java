@@ -41,8 +41,13 @@ public class UserService {
 
     @Transactional
     public UserResponse createUser(UserCreateRequestDto requestDto) {
-        Optional<User> duplicateCheck = userRepository.findByEmail(requestDto.getEmail());
-        if(duplicateCheck.isPresent()){
+        Optional<User> duplicateCheck = userRepository.findByEmailForCheckDuplicate(requestDto.getEmail());
+        if (duplicateCheck.isPresent()) {
+            User user = duplicateCheck.get();
+            if(user.getDeleted()){ //탈퇴했던 사용자라면
+                //탈퇴한 회원임을 알리기?
+                throw new ApplicationException(ErrorCode.USER_ACCOUNT_DELETED);
+            }
             throw new ApplicationException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
         User user = User.builder()

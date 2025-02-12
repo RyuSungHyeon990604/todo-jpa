@@ -11,7 +11,8 @@ public enum ErrorCode {
     METHOD_ARGUMENT_NOT_VALID("0002","입력값이 올바르지 않습니다"),
     MISSING_REQUEST_HEADER("0003","필수요청 헤더가 누락되었습니다"),
     TODO_NOT_FOUND("0006", "Todo not found"),
-    COMMENT_NOT_FOUND("0007", "Comment not found");
+    COMMENT_NOT_FOUND("0007", "Comment not found"),
+    USER_ACCOUNT_DELETED("0008", "해당 계정은 탈퇴 처리된 회원입니다.");
     private final String code;
     private final String message;
 
