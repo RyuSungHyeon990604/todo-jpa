@@ -6,7 +6,7 @@ import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
-@SQLDelete(sql = "update comment set deleted = true where id = ?")
+@SQLDelete(sql = "update comment set deleted_at = now() where id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
     @Id

@@ -14,8 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long>, CustomUserRep
 
     @Query(" select u.lastLogoutTime " +
             "  from User u " +
-            " where u.id = :id " +
-            "   and u.deleted = false ")
+            " where u.id = :id ")
     Timestamp findLastLogoutTimeById(Long id);
 
     @Query(value = " select * " +

@@ -15,8 +15,8 @@ import java.util.List;
 
 @Entity
 @Getter
-@SQLDelete(sql = "update user set deleted = true where id = ?")
-@SQLRestriction("deleted = false")
+@SQLDelete(sql = "update user set deleted_at = now() where id = ?")
+@SQLRestriction("deleted_at is NULL")
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class User extends BaseEntity {
     @Id

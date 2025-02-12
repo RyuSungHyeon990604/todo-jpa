@@ -10,35 +10,32 @@ import java.util.*;
 @Getter
 public class CommentDetail {
     private final String comment;
-    private final Long todoId;
     private final Long userId;
     private final String userName;
     private final Long id;
     private final Long parentId;
     private final LocalDateTime createdAt;
-    private final Boolean isDeleted;
+    private final LocalDateTime deletedAt;
     private final List<CommentDetail> children = new ArrayList<>();
 
-    public CommentDetail(String comment, Long todoId, Long userId,String userName, Long id, Long parentId, Boolean isDeleted, LocalDateTime createdAt) {
-        this.comment = isDeleted ? "삭제된 댓글" : comment;
-        this.todoId = todoId;
+    public CommentDetail(String comment, Long userId,String userName, Long id, Long parentId, LocalDateTime deletedAt, LocalDateTime createdAt) {
+        this.comment = deletedAt != null ? "삭제된 댓글" : comment;
         this.userId = userId;
         this.userName = userName ==null ? "삭제된 사용자" : userName;
         this.id = id;
         this.parentId = parentId;
-        this.isDeleted = isDeleted;
+        this.deletedAt = deletedAt;
         this.createdAt = createdAt;
     }
 
     public static CommentDetail from(Comment comment) {
         return new CommentDetail(
-                comment.getDeleted() ? "삭제된 댓글" : comment.getComment(),
-                comment.getTodo() == null ? null : comment.getTodo().getId(),
+                comment.getDeletedAt() != null ? "삭제된 댓글" : comment.getComment(),
                 comment.getUser() == null ? null :  comment.getUser().getId(),
                 comment.getUser() == null ? "삭제된 사용자"  :comment.getUser().getName(),
                 comment.getId(),
                 comment.getParent() == null ? null : comment.getParent().getId(),
-                comment.getDeleted(),
+                comment.getDeletedAt(),
                 comment.getCreatedAt()
         );
     }

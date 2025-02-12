@@ -24,8 +24,7 @@ public class UserRepositoryImpl implements CustomUserRepository {
         if (name != null) {
             query.where(user.name.like("%" + name + "%"));
         }
-        query.where(user.deleted.eq(false))
-                .orderBy(user.updatedAt.desc());
+        query.orderBy(user.updatedAt.desc());
 
         List<User> users = query.fetch();
 

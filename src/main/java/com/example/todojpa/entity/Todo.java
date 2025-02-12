@@ -5,15 +5,15 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 
 @Entity
 @Getter
-@SQLDelete(sql = "update todo set deleted = true where id = ?")
-@SQLRestriction("deleted = false")
+@SQLDelete(sql = "update todo set deleted_at = now() where id = ?")
+@SQLRestriction("deleted_at is null ")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Todo extends BaseEntity {
     @Id

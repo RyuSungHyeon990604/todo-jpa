@@ -44,7 +44,7 @@ public class UserService {
         Optional<User> duplicateCheck = userRepository.findByEmailForCheckDuplicate(requestDto.getEmail());
         if (duplicateCheck.isPresent()) {
             User user = duplicateCheck.get();
-            if(user.getDeleted()){ //탈퇴했던 사용자라면
+            if(user.getDeletedAt()!=null){ //탈퇴했던 사용자라면
                 //탈퇴한 회원임을 알리기?
                 throw new ApplicationException(ErrorCode.USER_ACCOUNT_DELETED);
             }
