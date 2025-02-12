@@ -2,6 +2,7 @@ package com.example.todojpa.service;
 
 import com.example.todojpa.dto.request.comment.CommentCreateRequestDto;
 import com.example.todojpa.dto.request.comment.CommentUpdateRequestDto;
+import com.example.todojpa.dto.response.comment.CommentDetail;
 import com.example.todojpa.dto.response.comment.CommentResponse;
 import com.example.todojpa.entity.Comment;
 import com.example.todojpa.entity.Todo;
@@ -29,9 +30,8 @@ public class CommentService {
     }
 
     public CommentResponse findAllCommentByTodoId(Long todoId) {
-        List<Comment> comments = commentRepository.findAllByTodoIdOrderByCreatedAt(todoId);
-
-        return CommentResponse.from(comments);
+        List<Comment> comments = commentRepository.findAllByTodoIdOrderByLevelAscCreatedAtDesc(todoId);
+        return CommentResponse.from(CommentDetail.convertTree(comments));
     }
 
     @Transactional
@@ -42,7 +42,8 @@ public class CommentService {
                 .user(from)
                 .todo(to)
                 .comment(requestDto.getComment())
-                .build();;
+                .level(0)
+                .build();
         if (requestDto.getParent() != null){//일반 댓글이라면
             Comment parent = commentRepository.findById(requestDto.getParent()).orElseThrow(()->new ApplicationException(ErrorCode.COMMENT_NOT_FOUND));
             if(!parent.getTodo().getId().equals(todoId)){
@@ -50,11 +51,12 @@ public class CommentService {
                 throw new ApplicationException(ErrorCode.BAD_REQUEST);
             }
             comment.setParent(parent);
+            comment.setLevel(parent.getLevel() + 1);
         }
 
         Comment save = commentRepository.save(comment);
 
-        return CommentResponse.from(List.of(save));
+        return CommentResponse.from(save);
     }
 
     @Transactional

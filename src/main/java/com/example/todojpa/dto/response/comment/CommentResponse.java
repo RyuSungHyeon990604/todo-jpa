@@ -11,10 +11,14 @@ import java.util.*;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentResponse {
-    Set<CommentDetail> data;
+    List<CommentDetail> data;
     PageInfo pageInfo;
 
-    public static CommentResponse from(List<Comment> comments) {
-        return new CommentResponse(CommentDetail.convertTree(comments), null);
+    public static CommentResponse from(List<CommentDetail> comments) {
+        return new CommentResponse(comments, null);
+    }
+
+    public static CommentResponse from(Comment comment) {
+        return new CommentResponse(List.of(CommentDetail.from(comment)),null);
     }
 }
