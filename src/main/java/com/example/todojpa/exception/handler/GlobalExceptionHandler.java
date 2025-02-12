@@ -5,6 +5,7 @@ import com.example.todojpa.exception.ErrorCode;
 import com.example.todojpa.exception.ExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,8 +25,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleApplicationException(ApplicationException e) {
         log.warn(e.getMessage(),e);
         ExceptionResponse response = new ExceptionResponse(e.getMessage(),e.getErrorCode());
-
-        return ResponseEntity.badRequest().body(response);
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        if(e.getErrorCode().equals(ErrorCode.ACCESS_DENIED.getCode()))
+            status = HttpStatus.UNAUTHORIZED;
+        return ResponseEntity.status(status).body(response);
     }
 
     //@Valid request 유효성 체크
