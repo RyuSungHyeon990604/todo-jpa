@@ -62,11 +62,10 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Long userId, UserDeleteRequestDto requestDto) {
+    public void deleteUser(Long userId, Long loginUserId, UserDeleteRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
-        Long id = getUserIdFromContext();
 
-        if(!id.equals(user.getId())) {
+        if(!loginUserId.equals(user.getId())) {
             throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
         if(!requestDto.getPassword().equals(user.getPassword())) {
@@ -77,16 +76,14 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(Long userId, UserUpdateRequestDto requestDto) {
-        Long id = getUserIdFromContext();
-
-        if(!id.equals(userId)) {
+    public void updateUser(Long userId, Long loginUserId, UserUpdateRequestDto requestDto) {
+        if(!loginUserId.equals(userId)) {
             throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
-        User user = userRepository.findById(id).orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(loginUserId).orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_FOUND));
 
 
-        if(!id.equals(user.getId())) {
+        if(!loginUserId.equals(user.getId())) {
             throw new ApplicationException(ErrorCode.INVALID_TOKEN);
         }
         if(!PasswordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
@@ -94,13 +91,5 @@ public class UserService {
         }
 
         user.updateUser(requestDto.getName(), requestDto.getEmail(), requestDto.getPassword());
-    }
-
-    public Long getUserIdFromContext() {
-        if(MySecurityContextHolder.getAuthenticated() != null && MySecurityContextHolder.getAuthenticated().getIsValid()) {
-            return MySecurityContextHolder.getAuthenticated().getUserId();
-        } else {
-            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
-        }
     }
 }

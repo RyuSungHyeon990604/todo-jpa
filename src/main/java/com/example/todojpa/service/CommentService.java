@@ -35,8 +35,8 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponse addComment(CommentCreateRequestDto requestDto, Long todoId) {
-        User from = userRepository.findById(getUserIdFromContext()).orElseThrow(()->new ApplicationException(ErrorCode.USER_NOT_FOUND));
+    public CommentResponse addComment(Long todoId, Long loginUserId, CommentCreateRequestDto requestDto) {
+        User from = userRepository.findById(loginUserId).orElseThrow(()->new ApplicationException(ErrorCode.USER_NOT_FOUND));
         Todo to = todoRepository.findById(todoId).orElseThrow(()->new ApplicationException(ErrorCode.TODO_NOT_FOUND));
         Comment comment = Comment.builder()
                 .user(from)
@@ -60,10 +60,10 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, Long loginUserId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(()->new ApplicationException(ErrorCode.COMMENT_NOT_FOUND));
 
-        if(!comment.getUser().getId().equals(getUserIdFromContext())) {
+        if(!comment.getUser().getId().equals(loginUserId)) {
             throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
 
@@ -71,22 +71,13 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateComment(Long commentId, CommentUpdateRequestDto requestDto){
+    public void updateComment(Long commentId, Long loginUserId, CommentUpdateRequestDto requestDto){
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ApplicationException(ErrorCode.COMMENT_NOT_FOUND));
 
-        if(!comment.getUser().getId().equals(getUserIdFromContext())) {
+        if(!comment.getUser().getId().equals(loginUserId)) {
             throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
 
         comment.updateComment(requestDto.getComment());
     }
-
-    public Long getUserIdFromContext() {
-        if(MySecurityContextHolder.getAuthenticated() != null && MySecurityContextHolder.getAuthenticated().getIsValid()) {
-            return MySecurityContextHolder.getAuthenticated().getUserId();
-        } else {
-            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
-        }
-    }
-
 }

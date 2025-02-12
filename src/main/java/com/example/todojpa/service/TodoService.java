@@ -9,7 +9,6 @@ import com.example.todojpa.exception.ApplicationException;
 import com.example.todojpa.exception.ErrorCode;
 import com.example.todojpa.repository.todo.TodoRepository;
 import com.example.todojpa.repository.user.UserRepository;
-import com.example.todojpa.security.MySecurityContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,9 +42,8 @@ public class TodoService {
     }
 
     @Transactional
-    public TodoResponse createTodo(TodoCreateRequestDto requestDto) {
-        Long userId = getUserIdFromContext();;
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
+    public TodoResponse createTodo(Long loginUserId, TodoCreateRequestDto requestDto) {
+        User user = userRepository.findById(loginUserId).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
 
         Todo todo = Todo.builder()
                 .task(requestDto.getTask())
@@ -58,11 +56,10 @@ public class TodoService {
     }
 
     @Transactional
-    public void updateTodo(TodoUpdateRequestDto requestDto, Long todoId){
+    public void updateTodo(Long todoId, Long loginUserId, TodoUpdateRequestDto requestDto){
         Todo todo = todoRepository.findById(todoId).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
-        Long userId = getUserIdFromContext();
 
-        if(!todo.getUser().getId().equals(userId)) {
+        if(!todo.getUser().getId().equals(loginUserId)) {
             throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
 
@@ -70,22 +67,15 @@ public class TodoService {
     }
 
     @Transactional
-    public void deleteTodo(Long id) {
+    public void deleteTodo(Long id, Long loginUserId) {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
-        Long userId = getUserIdFromContext();
 
-        if(!todo.getUser().getId().equals(userId)) {
+        if(!todo.getUser().getId().equals(loginUserId)) {
             throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
 
         todoRepository.delete(todo);
     }
 
-    public Long getUserIdFromContext() {
-        if(MySecurityContextHolder.getAuthenticated() != null && MySecurityContextHolder.getAuthenticated().getIsValid()) {
-            return MySecurityContextHolder.getAuthenticated().getUserId();
-        } else {
-            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
-        }
-    }
+
 }

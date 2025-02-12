@@ -1,5 +1,7 @@
 package com.example.todojpa.controller;
 
+import com.example.todojpa.annotation.LoginUser;
+import com.example.todojpa.annotation.LoginUserDto;
 import com.example.todojpa.dto.request.comment.CommentCreateRequestDto;
 import com.example.todojpa.dto.response.comment.CommentResponse;
 import com.example.todojpa.service.CommentService;
@@ -27,14 +29,15 @@ public class CommentController {
 
     @PostMapping("/{todoId}")
     public ResponseEntity<CommentResponse> addComment(@PathVariable Long todoId,
-                                                      @RequestBody @Valid CommentCreateRequestDto comment) {
-        CommentResponse commentResponse = commentService.addComment(comment, todoId);
+                                                      @RequestBody @Valid CommentCreateRequestDto comment,
+                                                      @LoginUser LoginUserDto loginUser) {
+        CommentResponse commentResponse = commentService.addComment(todoId, loginUser.getUserId(), comment);
         return ResponseEntity.ok(commentResponse);
     }
 
     @PostMapping("/{id}/delete")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
-        commentService.deleteComment(id);
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id, @LoginUser LoginUserDto loginUser) {
+        commentService.deleteComment(id, loginUser.getUserId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -1,5 +1,7 @@
 package com.example.todojpa.controller;
 
+import com.example.todojpa.annotation.LoginUser;
+import com.example.todojpa.annotation.LoginUserDto;
 import com.example.todojpa.dto.request.user.UserCreateRequestDto;
 import com.example.todojpa.dto.request.user.UserDeleteRequestDto;
 import com.example.todojpa.dto.request.user.UserUpdateRequestDto;
@@ -42,16 +44,18 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateUser(@PathVariable("id") Long id,
-                                           @RequestBody @Valid UserUpdateRequestDto requestDto) {
-        userService.updateUser(id, requestDto);
+                                           @RequestBody @Valid UserUpdateRequestDto requestDto,
+                                           @LoginUser LoginUserDto loginUser) {
+        userService.updateUser(id, loginUser.getUserId(), requestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PostMapping("/{id}/delete")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id,
-                                           @RequestBody @Valid UserDeleteRequestDto requestDto) {
-        userService.deleteUser(id, requestDto);
+                                           @RequestBody @Valid UserDeleteRequestDto requestDto,
+                                           @LoginUser LoginUserDto loginUser) {
+        userService.deleteUser(id, loginUser.getUserId(), requestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }

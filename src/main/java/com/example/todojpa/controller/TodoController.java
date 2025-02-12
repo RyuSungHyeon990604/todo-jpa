@@ -2,6 +2,8 @@ package com.example.todojpa.controller;
 
 
 import com.example.todojpa.annotation.DateCheck;
+import com.example.todojpa.annotation.LoginUser;
+import com.example.todojpa.annotation.LoginUserDto;
 import com.example.todojpa.dto.request.todo.TodoCreateRequestDto;
 import com.example.todojpa.dto.response.todo.TodoResponse;
 import com.example.todojpa.dto.request.todo.TodoUpdateRequestDto;
@@ -52,22 +54,25 @@ public class TodoController {
     }
 
     @PostMapping("")
-    public ResponseEntity<TodoResponse> createTodo(@RequestBody @Valid TodoCreateRequestDto requestDto) {
-        TodoResponse todo = todoService.createTodo(requestDto);
+    public ResponseEntity<TodoResponse> createTodo(@RequestBody @Valid TodoCreateRequestDto requestDto,
+                                                   @LoginUser LoginUserDto loginUser) {
+        TodoResponse todo = todoService.createTodo(loginUser.getUserId(), requestDto);
         return ResponseEntity.ok(todo);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateTodo(@PathVariable Long id,
-                                           @RequestBody @Valid TodoUpdateRequestDto requestDto) {
-        todoService.updateTodo(requestDto,id);
+                                           @RequestBody @Valid TodoUpdateRequestDto requestDto,
+                                           @LoginUser LoginUserDto loginUser ) {
+        todoService.updateTodo(id, loginUser.getUserId(), requestDto);
         return ResponseEntity.noContent().build();
     }
 
     //post delete, soft delete 써보기
     @PostMapping("/{id}/delete")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
-        todoService.deleteTodo(id);
+    public ResponseEntity<Void> deleteTodo(@PathVariable Long id,
+                                           @LoginUser LoginUserDto loginUser) {
+        todoService.deleteTodo(id, loginUser.getUserId());
         return ResponseEntity.noContent().build();
     }
 }
