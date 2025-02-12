@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.sql.Timestamp;
 
 @Slf4j
 @Component
@@ -99,9 +99,8 @@ public class LoginFilter implements Filter {
 
         //사용자 로그아웃이후에 발급한 토큰인지 검증, 이전에 발급한거라면 사용불가한 토큰
         Long userId = jwtProvider.getUserId(token);
-        Optional<User> user = userRepository.findById(userId);
-        if(user.isEmpty() ||
-                (user.get().getLastLogoutTime()!= null && jwtProvider.isIssuedBefore(token, user.get().getLastLogoutTime()))) {
+        Timestamp lastLogoutTime = userRepository.findLastLogoutTimeById(userId);
+        if(jwtProvider.isIssuedBefore(token, lastLogoutTime)) {
             sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, ErrorCode.INVALID_TOKEN);
             return;
         }

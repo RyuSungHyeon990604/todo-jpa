@@ -86,14 +86,14 @@ public class JwtProvider {
     }
 
     //date 이전에 발급한 토큰인지 검증
-    public Boolean isIssuedBefore(String token, LocalDateTime date) {
+    public Boolean isIssuedBefore(String token, Timestamp date) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getIssuedAt()
-                .before(Timestamp.valueOf(date));
+                .before(date);
     }
 
 }
