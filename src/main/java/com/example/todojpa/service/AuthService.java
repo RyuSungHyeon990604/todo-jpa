@@ -80,9 +80,8 @@ public class AuthService {
     }
 
     @Transactional
-    public void logOut() {
+    public void logOut(Long userId) {
         //refresh token을 삭제하고
-        Long userId = getUserIdFromContext();
         refreshTokenRepository.deleteById(userId);
 
         //사용자의 로그아웃시간을 갱신

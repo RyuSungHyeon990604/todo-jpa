@@ -1,5 +1,7 @@
 package com.example.todojpa.controller;
 
+import com.example.todojpa.annotation.LoginUser;
+import com.example.todojpa.annotation.LoginUserDto;
 import com.example.todojpa.dto.request.login.LoginRequestDto;
 import com.example.todojpa.dto.response.token.TokenResponse;
 import com.example.todojpa.service.AuthService;
@@ -33,8 +35,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logoutJwt() {
-        authService.logOut();
+    public ResponseEntity<Void> logoutJwt(@LoginUser LoginUserDto loginUserDto) {
+        authService.logOut(loginUserDto.getUserId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
