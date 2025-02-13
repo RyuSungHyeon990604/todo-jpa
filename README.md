@@ -24,7 +24,7 @@ CREATE TABLE `todo` (
   `updated_at` DATETIME(6) DEFAULT NULL,
   `deleted_at` DATETIME(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `FK_todo_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+  CONSTRAINT `FK_todo_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) 
 
 CREATE TABLE `comment` (
@@ -38,9 +38,9 @@ CREATE TABLE `comment` (
   `updated_at` DATETIME(6) DEFAULT NULL,
   `deleted_at` DATETIME(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `FK_comment_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `FK_comment_todo` FOREIGN KEY (`todo_id`) REFERENCES `todo` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_comment_parent` FOREIGN KEY (`parent_id`) REFERENCES `comment` (`id`) ON DELETE CASCADE
+  CONSTRAINT `FK_comment_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `FK_comment_todo` FOREIGN KEY (`todo_id`) REFERENCES `todo` (`id`),
+  CONSTRAINT `FK_comment_parent` FOREIGN KEY (`parent_id`) REFERENCES `comment` (`id`) 
 ) 
 
 CREATE TABLE `user_refresh_token` (
@@ -50,7 +50,7 @@ CREATE TABLE `user_refresh_token` (
   `updated_at` DATETIME(6) DEFAULT NULL,
   `deleted_at` DATETIME(6) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
-  CONSTRAINT `FK_refresh_token_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+  CONSTRAINT `FK_refresh_token_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) 
 ```
 ## 📌 프로젝트 소개
