@@ -68,8 +68,7 @@ public class TodoController {
         return ResponseEntity.noContent().build();
     }
 
-    //post delete, soft delete 써보기
-    @PostMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTodo(@PathVariable Long id,
                                            @LoginUser LoginUserDto loginUser) {
         todoService.deleteTodo(id, loginUser.getUserId());

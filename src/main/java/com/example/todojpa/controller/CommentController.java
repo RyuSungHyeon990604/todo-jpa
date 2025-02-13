@@ -35,7 +35,7 @@ public class CommentController {
         return ResponseEntity.ok(commentResponse);
     }
 
-    @PostMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long id, @LoginUser LoginUserDto loginUser) {
         commentService.deleteComment(id, loginUser.getUserId());
         return ResponseEntity.status(HttpStatus.OK).build();
