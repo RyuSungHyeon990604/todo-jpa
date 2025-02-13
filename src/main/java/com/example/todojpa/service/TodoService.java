@@ -2,12 +2,15 @@ package com.example.todojpa.service;
 
 import com.example.todojpa.dto.request.todo.TodoCreateRequestDto;
 import com.example.todojpa.dto.request.todo.TodoUpdateRequestDto;
+import com.example.todojpa.dto.response.comment.CommentDetail;
 import com.example.todojpa.dto.response.todo.TodoDetail;
 import com.example.todojpa.dto.response.todo.TodoResponse;
+import com.example.todojpa.entity.Comment;
 import com.example.todojpa.entity.Todo;
 import com.example.todojpa.entity.User;
 import com.example.todojpa.exception.ApplicationException;
 import com.example.todojpa.exception.ErrorCode;
+import com.example.todojpa.repository.comment.CommentRepository;
 import com.example.todojpa.repository.todo.TodoRepository;
 import com.example.todojpa.repository.user.UserRepository;
 import org.springframework.data.domain.Page;
@@ -16,16 +19,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Service
 public class TodoService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
-    public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
+    public TodoService(TodoRepository todoRepository, UserRepository userRepository, CommentRepository commentRepository) {
         this.todoRepository = todoRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Transactional(readOnly = true)
@@ -38,8 +44,12 @@ public class TodoService {
     @Transactional(readOnly = true)
     public TodoResponse findTodoById(Long id) {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new ApplicationException(ErrorCode.TODO_NOT_FOUND));
+        List<Comment> comments = commentRepository.findAllByTodoIdOrderByLevelAscCreatedAtDesc(todo.getId());
 
-        return TodoResponse.from(todo);
+        TodoDetail dto = TodoDetail.from(todo);
+        dto.setComments(CommentDetail.convertTree(comments));
+
+        return TodoResponse.from(dto);
     }
 
     @Transactional
@@ -53,7 +63,7 @@ public class TodoService {
 
         Todo save = todoRepository.save(todo);
 
-        return TodoResponse.from(save);
+        return TodoResponse.from(TodoDetail.from(save));
     }
 
     @Transactional

@@ -34,10 +34,6 @@ public class Todo extends BaseEntity {
     @Column(nullable = false)
     private String task;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "todo")
-    @BatchSize(size = 10)
-    private List<Comment> comments = new ArrayList<>();
-
 
     @Builder
     public Todo(User user, String title, String task) {
@@ -49,9 +45,5 @@ public class Todo extends BaseEntity {
     public void update(String title, String task){
         this.title = title;
         this.task = task;
-    }
-
-    public int getCommentCount(){
-        return comments.size();
     }
 }

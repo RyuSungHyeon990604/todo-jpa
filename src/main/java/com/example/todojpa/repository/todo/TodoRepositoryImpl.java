@@ -39,7 +39,7 @@ public class TodoRepositoryImpl implements CustomTodoRepository {
         List<TodoDetail> todoDetails = queryFactory.select(Projections.constructor(TodoDetail.class, todo, comment1.id.count()))
                 .from(todo)
                 .join(todo.user).fetchJoin()
-                .leftJoin(todo, comment1.todo)
+                .leftJoin(comment1).on(comment1.todo.eq(todo))
                 .where(eqUserName(userName), inDate(updatedAt))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .groupBy(todo.id)

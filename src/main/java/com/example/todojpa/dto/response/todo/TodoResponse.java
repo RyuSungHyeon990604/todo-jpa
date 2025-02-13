@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,17 +15,16 @@ public class TodoResponse {
     private final List<TodoDetail> data;
     private final PageInfo pageInfo;
 
-    public static TodoResponse from(Page<TodoDetail> todos) {
-        return new TodoResponse(todos.getContent(), new PageInfo(todos));
+
+    public static TodoResponse from(Page<TodoDetail> data) {
+        return new TodoResponse(data.getContent(),new PageInfo(data));
     }
 
-    public static TodoResponse from(Todo todo) {
-        //null넣는거 별로 안좋은듯?
-        return new TodoResponse(List.of(TodoDetail.from(todo)), null);
+    public static TodoResponse from(List<TodoDetail> data) {
+        return new TodoResponse(data,null);
     }
 
-    public static TodoResponse from(List<Todo> todos) {
-        List<TodoDetail> todoList = todos.stream().map(TodoDetail::from).toList();
-        return new TodoResponse(todoList, null);
+    public static TodoResponse from(TodoDetail data) {
+        return new TodoResponse(List.of(data),null);
     }
 }
