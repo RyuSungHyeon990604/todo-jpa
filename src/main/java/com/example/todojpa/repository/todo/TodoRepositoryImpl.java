@@ -5,6 +5,7 @@ import com.example.todojpa.entity.QComment;
 import com.example.todojpa.entity.QTodo;
 import com.example.todojpa.entity.Todo;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,10 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static com.example.todojpa.entity.QTodo.todo;
+import static com.example.todojpa.entity.QUser.user;
+import static com.example.todojpa.entity.QComment.comment1;
 
 //구현체이름 중요 **Impl 로해야함
 @Repository
@@ -30,39 +35,34 @@ public class TodoRepositoryImpl implements CustomTodoRepository {
 
     @Override
     public Page<TodoDetail> search(String userName, LocalDate updatedAt, Pageable pageable) {
-        QTodo todo = QTodo.todo;
-        QComment comment = QComment.comment1;
-        JPAQuery<TodoDetail> query = queryFactory.select(Projections.constructor(TodoDetail.class, todo, comment.id.count()))
+
+        List<TodoDetail> todoDetails = queryFactory.select(Projections.constructor(TodoDetail.class, todo, comment1.id.count()))
                 .from(todo)
                 .join(todo.user).fetchJoin()
-                .leftJoin(todo.comments,comment);
-        //카운트 쿼리? 일단 해보기
-        JPAQuery<Long> countQuery = queryFactory.select(todo.count()).from(todo);
+                .leftJoin(todo, comment1.todo)
+                .where(eqUserName(userName), inDate(updatedAt))
+                .offset(pageable.getOffset()).limit(pageable.getPageSize())
+                .groupBy(todo.id)
+                .orderBy(todo.updatedAt.desc())
+                .fetch();
 
-        //검색조건 : 작성자 이름
-        if (userName != null) {
-            query.where(todo.user.name.eq(userName));
-            countQuery.where(todo.user.name.eq(userName));
-        }
+        Long total = queryFactory.select(todo.count())
+                .from(todo)
+                .where(eqUserName(userName), inDate(updatedAt))
+                .fetchOne();
 
-        //검색조건 : 수정일(작성일)
-        if (updatedAt != null) {
-            query.where(todo.updatedAt.between(updatedAt.atStartOfDay(), updatedAt.atTime(23, 59, 59)));
-            countQuery.where(todo.updatedAt.between(updatedAt.atStartOfDay(), updatedAt.atTime(23, 59, 59)));
-        }
-        query.groupBy(todo.id);
-        query.orderBy(todo.updatedAt.desc());
-
-        if (pageable != null) {
-            query.offset(pageable.getOffset()).limit(pageable.getPageSize());
-        } else query.offset(DEFAULT_PAGE_NUMBER).limit(DEFAULT_PAGE_SIZE);
-
-        List<TodoDetail> fetch = query.fetch();
-
-        Long total = countQuery.fetchOne();
 
         //나중에 Pageable null체크 따로 빼주기
-        return new PageImpl<>(fetch, pageable == null ? PageRequest.of(DEFAULT_PAGE_NUMBER,DEFAULT_PAGE_SIZE) : pageable, total == null ? 0 : total);
+        return new PageImpl<>(todoDetails, pageable == null ? PageRequest.of(DEFAULT_PAGE_NUMBER,DEFAULT_PAGE_SIZE) : pageable, total == null ? 0 : total);
+    }
 
+    private BooleanExpression eqUserName(String userName) {
+        if(userName == null) return null;
+        return todo.user.name.eq(userName);
+    }
+
+    private BooleanExpression inDate(LocalDate date) {
+        if(date == null) return null;
+        return todo.updatedAt.between(date.atStartOfDay(), date.atTime(23, 59, 59));
     }
 }
