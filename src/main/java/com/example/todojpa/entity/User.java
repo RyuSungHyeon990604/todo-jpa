@@ -35,9 +35,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Todo> todos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<Comment> comments = new ArrayList<>();
-
     @Column
     private LocalDateTime lastLogoutTime;
 
